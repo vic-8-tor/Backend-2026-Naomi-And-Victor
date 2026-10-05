@@ -16,7 +16,7 @@ app.use("/users", userRoutes);
 
 const connectDB = async () => {
   try {
-    await mongoose.connect("mongodb://localhost:27017/myFirstDB");
+    await mongoose.connect(process.env.MONGODB_URL);
     console.log("DB Connected");
   } catch (err) {
     console.error(err.message);
