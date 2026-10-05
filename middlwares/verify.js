@@ -5,7 +5,6 @@ const verifyToken = async (req, res, next) => {
   if (!fullToken) return res.status(401).json("UnAuthorized Access");
 
   const token = fullToken.split(" ")[1];
-  console.log(token);
   jwt.verify(token, process.env.SPECIAL_KEY, (err, user) => {
     if (err) return res.status(403).json("Forbidden Access");
 

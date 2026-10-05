@@ -13,7 +13,7 @@ const upload = require("../middlwares/multer");
 const { verify } = require('jsonwebtoken');
 const router = express.Router();
 
-router.post("/", upload.single("dp"), createUser);
+router.post("/", upload.single("file"), createUser);
 router.post("/login", loginUser);
 router.get("/user/:id", getUser);
 router.get("/", getUsers);

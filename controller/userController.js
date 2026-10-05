@@ -52,8 +52,6 @@ const createUser = async (req, res) => {
         message: "File upload failed",
       });
     });
-
-    return res.status(500).json({ message: err.message });
   } catch (err) {
     console.error(err.message);
     res.status(500).json(err.message);
@@ -101,10 +99,10 @@ const getUser = async (req, res) => {
       message: "User found",
       user: {
         _id: user._id,
-        name: user.name,
+        name: user.username,
         email: user.email,
         profilePicture: user.profilePicture
-          ? `users/profile-picture/${user.profilePicture}`
+          ? `/users/profile-picture/${user.profilePicture}`
           : null,
       },
     });
@@ -147,7 +145,7 @@ const getProfilePicture = async (req, res) => {
     console.log("ran");
 
     console.error(err.message);
-    return res.ststus(500).json({
+    return res.status(500).json({
       message: err.message,
     });
   }
