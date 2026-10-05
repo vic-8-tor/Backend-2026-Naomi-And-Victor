@@ -15,7 +15,7 @@ if (form) {
     const email = document.getElementById("email").value;
     const password = document.getElementById("password").value;
 
-    const response = await fetch("/users", {
+    const response = await fetch("/https://backend-2026-naomi-and-victor-rumw.onrender.com/users", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -41,7 +41,7 @@ if (loginForm) {
     const email = document.getElementById("loginEmail").value;
     const password = document.getElementById("loginPassword").value;
 
-    const response = await fetch("/users/login", {
+    const response = await fetch("https://backend-2026-naomi-and-victor-rumw.onrender.com/users/login", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -78,7 +78,7 @@ if (updateForm) {
     const email = document.getElementById("updateEmail").value;
     const password = document.getElementById("updatePassword").value;
 
-    const response = await fetch(`/users/user`, {
+    const response = await fetch(`https://backend-2026-naomi-and-victor-rumw.onrender.com/users/user`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -103,7 +103,7 @@ if (deleteButton) {
   deleteButton.addEventListener("click", async (event) => {
     event.preventDefault();
 
-    const response = await fetch(`/users/user`, {
+    const response = await fetch(`https://backend-2026-naomi-and-victor-rumw.onrender.com/users/user`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
@@ -121,7 +121,7 @@ if (getAllUsers) {
   getAllUsers.addEventListener("click", async (event) => {
     event.preventDefault();
 
-    const response = await fetch(`/users`, {
+    const response = await fetch(`https://backend-2026-naomi-and-victor-rumw.onrender.com/users`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -139,7 +139,7 @@ if (getUser) {
   getUser.addEventListener("click", async (event) => {
     event.preventDefault();
 
-    const response = await fetch(`/users/user`, {
+    const response = await fetch(`https://backend-2026-naomi-and-victor-rumw.onrender.com/users/user`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -156,7 +156,7 @@ if (getUser) {
 async function getUsers() {
   if (!usersContainer) return;
 
-  const response = await fetch("/users", {
+  const response = await fetch("https://backend-2026-naomi-and-victor-rumw.onrender.com/users", {
     headers: {
       Authorization: `Bearer ${localStorage.getItem("token")}`,
     },
