@@ -31,7 +31,7 @@ if (form) {
     });
 
     const data = await response.json();
-    console.log(data);
+    alert(data.message);
     form.reset();
     getUsers();
   });
