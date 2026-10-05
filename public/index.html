@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Users</title>
+    <link rel="stylesheet" href="style.css">
+  </head>
+  <body>
+    <h1>Create Account</h1>
+    <form id="userForm">
+      <input type="email" id="email" placeholder="Enter your email" required>
+      <input type="password" id="password" placeholder="Enter your password" required>
+      
+      <button type="submit">Register</button>
+      <div id="users"></div>
+    </form>
+  </form>
+  
+  <!-- Login -->
+  <h1>Login</h1>
+  <form id="loginForm">
+    <input type="email" id="loginEmail" placeholder="Enter your email" required>
+    <input type="password" id="loginPassword" placeholder="Enter your password" required>
+    
+    <button type="submit">Login</button>
+    <button id="logout">Logout</button>
+  </form>
+  
+  <!-- Delete Account -->
+  <h1>Delete Account</h1>
+  <div id="deleteAcc">
+    <button  id="delete">Delete</button>
+  </div>
+
+  <!-- Get User and Users -->
+  <button id="getUser">Get User</button>
+  <button id="getAllUsers">Get All Users</button>
+  <div id="usersContainersTwo"></div>
+  
+  <p><a href="update.html">Click here to update your account</a></p>
+  <script src="./script.js"></script>
+</body>
+</html>
