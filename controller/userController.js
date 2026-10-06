@@ -64,8 +64,6 @@ const loginUser = async (req, res) => {
     const { email, password } = req.body;
 
     const user = await User.findOne({ email });
-    console.log("USER FROM DATABASE:", user);
-    console.log("ROLE FROM DATABASE:", user.role);
     if (!user) return res.status(404).json("User not Found");
 
     const isValidPassword = await bcrypt.compare(password, user.password);
@@ -165,8 +163,8 @@ const getUsers = async (req, res) => {
 // Update User
 const updateUser = async (req, res) => {
   try {
-    const { userName, email, password } = req.user;
-    const updateData = { userName, email };
+    const {profilePicture, username, email, password } = req.user;
+    const updateData = {profilePicture, username, email };
 
     if (password) {
       updateData.password = await bcrypt.hash(password, 10);

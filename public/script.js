@@ -25,7 +25,7 @@ if (form) {
     formData.append("password", password)
     formData.append("file", file)
 
-    const response = await fetch(`${API}/users`, {
+    const response = await fetch(`/users`, {
       method: "POST",
       body: formData
     });
@@ -33,7 +33,6 @@ if (form) {
     const data = await response.json();
     alert(data.message);
     form.reset();
-    getUsers();
   });
 }
 
@@ -45,7 +44,7 @@ if (loginForm) {
     const email = document.getElementById("loginEmail").value;
     const password = document.getElementById("loginPassword").value;
 
-    const response = await fetch("/users/login", {
+    const response = await fetch(`/users/login`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -64,6 +63,7 @@ if (loginForm) {
     localStorage.setItem("token", data.token);
 
     loginForm.reset();
+    getUsers()
   });
 }
 
@@ -125,7 +125,7 @@ if (getAllUsers) {
   getAllUsers.addEventListener("click", async (event) => {
     event.preventDefault();
 
-    const response = await fetch(`${API}/users`, {
+    const response = await fetch(`/users`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -143,7 +143,7 @@ if (getUser) {
   getUser.addEventListener("click", async (event) => {
     event.preventDefault();
 
-    const response = await fetch(`${API}/users/user`, {
+    const response = await fetch(`/users/user`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -160,7 +160,7 @@ if (getUser) {
 async function getUsers() {
   if (!usersContainer) return;
 
-  const response = await fetch(`${API}/users`, {
+  const response = await fetch(`/users`, {
     headers: {
       Authorization: `Bearer ${localStorage.getItem("token")}`,
     },
@@ -177,7 +177,7 @@ async function getUsers() {
     div.innerHTML = `
         <h3>${user.email}</h3>
         <p>${user.role}</p>
-        <img src="${API}/users/profile-picture/${user.profilePicture}" alt="profile-picture">`;
+        <img src="/users/profile-picture/${user.profilePicture}" alt="profile-picture">`;
 
     usersContainer.appendChild(div);
   });
