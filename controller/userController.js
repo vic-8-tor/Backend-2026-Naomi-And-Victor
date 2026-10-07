@@ -58,58 +58,7 @@ const createUser = async (req, res) => {
   }
 };
 
-// login
-const loginUser = async (req, res) => {
-  try {
-    const { email, password } = req.body;
-
-    const user = await User.findOne({ email });
-    if (!user) return res.status(404).json("User not Found");
-
-    const isValidPassword = await bcrypt.compare(password, user.password);
-    if (!isValidPassword) return res.status(401).json("Invalid Credentials");
-
-    const token = jwt.sign(
-      {
-        userId: user._id,
-        userEmail: user.email,
-        role: user.role,
-      },
-      KEY,
-      {
-        expiresIn: "30m",
-      },
-    );
-    console.log(token);
-    res.status(200).json({ token });
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).json(err.message);
-  }
-};
-
-// Get User
-const getUser = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const user = await User.findById(id).select("-password");
-    res.status(200).json({
-      message: "User found",
-      user: {
-        _id: user._id,
-        name: user.username,
-        email: user.email,
-        profilePicture: user.profilePicture
-          ? `/users/profile-picture/${user.profilePicture}`
-          : null,
-      },
-    });
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).json(err.message);
-  }
-};
-
+// Get Profile Picture
 const getProfilePicture = async (req, res) => {
   try {
     const { id } = req.params;
@@ -140,12 +89,57 @@ const getProfilePicture = async (req, res) => {
 
     downloadStream.pipe(res);
   } catch (err) {
-    console.log("ran");
-
     console.error(err.message);
     return res.status(500).json({
       message: err.message,
     });
+  }
+};
+
+// login
+const loginUser = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    const user = await User.findOne({ email });
+    if (!user) return res.status(404).json("User not Found");
+
+    const isValidPassword = await bcrypt.compare(password, user.password);
+    if (!isValidPassword) return res.status(401).json("Invalid Credentials");
+
+    const token = jwt.sign(
+      {
+        userId: user._id,
+        userEmail: user.email,
+      },
+      KEY,
+      {
+        expiresIn: "30m",
+      },
+    );
+    console.log(token);
+    res.status(200).json({ token, userId: user._id });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).json(err.message);
+  }
+};
+
+// Get User
+const getUser = async (req, res) => {
+  try {
+    const { id } = req.params;
+    console.log(id);
+    const user = await User.findById(id).select("-password");
+    res.status(200).json({
+      message: "User found",
+      email: user.email,
+      username: user.username,
+      profilePicture: user.profilePicture,
+    });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).json(err.message);
   }
 };
 
@@ -163,22 +157,55 @@ const getUsers = async (req, res) => {
 // Update User
 const updateUser = async (req, res) => {
   try {
-    const {profilePicture, username, email, password } = req.user;
-    const updateData = {profilePicture, username, email };
+    const { username, email, password } = req.body;
+    const { id } = req.params;
+
+    const updateData = {
+      username,
+      email,
+    };
 
     if (password) {
       updateData.password = await bcrypt.hash(password, 10);
     }
 
-    const updatedUser = await User.findByIdAndUpdate(
-      req.user.userId,
-      updateData,
-      { new: true },
-    );
+    // If a new profile picture was selected
+    if (req.file) {
+      const bucket = getBucket();
 
-    if (!updatedUser) return res.status(404).json("User not found");
+      const uploadStream = bucket.openUploadStream(req.file.originalname, {
+        metadata: {
+          contentType: req.file.mimetype,
+        },
+      });
 
-    res.status(200).json(updatedUser);
+      uploadStream.end(req.file.buffer);
+
+      uploadStream.on("finish", async () => {
+        updateData.profilePicture = uploadStream.id;
+
+        const updatedUser = await User.findByIdAndUpdate(id, updateData, {
+          new: true,
+        });
+
+        if (!updatedUser) {
+          return res.status(404).json("User not found");
+        }
+
+        res.status(200).json(updatedUser);
+      });
+    } else {
+      // No new picture
+      const updatedUser = await User.findByIdAndUpdate(id, updateData, {
+        new: true,
+      });
+
+      if (!updatedUser) {
+        return res.status(404).json("User not found");
+      }
+
+      res.status(200).json(updatedUser);
+    }
   } catch (err) {
     console.error(err.message);
     res.status(500).json(err.message);
@@ -188,13 +215,10 @@ const updateUser = async (req, res) => {
 // Delete User
 const deleteUser = async (req, res) => {
   try {
-    const { userId, role } = req.user;
-    const deletedUser = await User.findByIdAndDelete(userId);
+    const { id } = req.params;
+    const deletedUser = await User.findByIdAndDelete(id);
 
-    if (!deleteUser) {
-      return res.status(404).json("User not found");
-    }
-    res.status(200).json(deletedUser);
+    res.status(200).json("user deleted");
   } catch (err) {
     console.error(err.message);
     res.status(500).json(err.message);

@@ -18,8 +18,8 @@ router.post("/", upload.single("file"), createUser);
 router.post("/login", loginUser);
 router.get("/user/:id", getUser);
 router.get("/", getUsers);
-router.put("/user/:id", verifyToken, updateUser);
-router.delete("/user",  verifyToken, deleteUser);
+router.put("/user/:id", upload.single("file"), updateUser);
+router.delete("/user/:id",  deleteUser);
 router.get("/profile-picture/:id", getProfilePicture);
 
 module.exports = router;

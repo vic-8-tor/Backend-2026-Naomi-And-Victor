@@ -1,12 +1,11 @@
 const form = document.getElementById("userForm");
 const loginForm = document.getElementById("loginForm");
 const logout = document.getElementById("logout");
-const updateForm = document.getElementById("updateForm");
 const usersContainer = document.getElementById("users");
-const deleteButton = document.getElementById("delete");
-const getUser = document.getElementById("getUser");
-const getAllUsers = document.getElementById("getAllUsers");
-const usersContainersTwo = document.getElementById("usersContainersTwo");
+
+// User container
+const userInfo = document.getElementById("userInfo");
+console.log(userInfo);
 
 const API = "https://backend-2026-naomi-and-victor-rumw.onrender.com";
 
@@ -20,14 +19,14 @@ if (form) {
     const file = document.getElementById("dp").files[0];
 
     const formData = new FormData();
-    formData.append("username", username)
-    formData.append("email", email)
-    formData.append("password", password)
-    formData.append("file", file)
+    formData.append("username", username);
+    formData.append("email", email);
+    formData.append("password", password);
+    formData.append("file", file);
 
-    const response = await fetch(`/users`, {
+    const response = await fetch(`${API}/users`, {
       method: "POST",
-      body: formData
+      body: formData,
     });
 
     const data = await response.json();
@@ -44,7 +43,7 @@ if (loginForm) {
     const email = document.getElementById("loginEmail").value;
     const password = document.getElementById("loginPassword").value;
 
-    const response = await fetch(`/users/login`, {
+    const response = await fetch(`${API}/users/login`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -56,14 +55,13 @@ if (loginForm) {
     });
 
     const data = await response.json();
-
     console.log(data);
 
     // Saving token in the Local Storage
+    localStorage.setItem("userId", data.userId);
     localStorage.setItem("token", data.token);
 
     loginForm.reset();
-    getUsers()
   });
 }
 
@@ -74,112 +72,145 @@ if (logout) {
   });
 }
 
-// Update User
-if (updateForm) {
-  updateForm.addEventListener("submit", async (event) => {
-    event.preventDefault();
-    const userName = document.getElementById("updateUserName").value;
-    const email = document.getElementById("updateEmail").value;
-    const password = document.getElementById("updatePassword").value;
+async function deleteUser() {
+  const id = await localStorage.getItem("userId");
+  const token = await localStorage.getItem("token");
 
-    const response = await fetch(`/users/user`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
-      body: JSON.stringify({
-        userName,
-        email,
-        password,
-      }),
-    });
-
-    const data = await response.json();
-    console.log(data);
-    updateForm.reset();
-    getUsers();
+  await fetch(`${API}/users/user/${id}`, {
+    method: "DELETE",
+    headers: {
+      "content-type": "application/json",
+      Autorization: `bearer ${token}`,
+    },
   });
+  getUsers();
 }
 
-// Delete User
-if (deleteButton) {
-  deleteButton.addEventListener("click", async (event) => {
-    event.preventDefault();
-
-    const response = await fetch(`/users/user`, {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
-    });
-
-    const data = await response.json();
-    console.log(data);
-  });
-}
-
-// Get Users
-if (getAllUsers) {
-  getAllUsers.addEventListener("click", async (event) => {
-    event.preventDefault();
-
-    const response = await fetch(`/users`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
-    });
-
-    const data = await response.json();
-    console.log(data);
-  });
-}
-
-// Get User
-if (getUser) {
-  getUser.addEventListener("click", async (event) => {
-    event.preventDefault();
-
-    const response = await fetch(`/users/user`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
-    });
-
-    const data = await response.json();
-    console.log(data);
-  });
-}
-
-// Display
+// Users Container
 async function getUsers() {
   if (!usersContainer) return;
 
-  const response = await fetch(`/users`, {
-    headers: {
-      Authorization: `Bearer ${localStorage.getItem("token")}`,
-    },
-  });
+  const response = await fetch(`${API}/users`);
 
   const users = await response.json();
+  console.log(users);
 
   usersContainer.innerHTML = "";
   users.forEach((user) => {
-    console.log(user)
-    const div = document.createElement("div");
-    console.log(user)
-    div.className = "user";
-    div.innerHTML = `
+    const usersDiv = document.createElement("div");
+    console.log(user);
+    usersDiv.className = "user";
+    usersDiv.innerHTML = `
         <h3>${user.email}</h3>
-        <p>${user.role}</p>
-        <img src="/users/profile-picture/${user.profilePicture}" alt="profile-picture">`;
+        <p>${user.username}</p>
+        <img src="${API}/users/profile-picture/${user.profilePicture}" alt="profile-picture">`;
 
-    usersContainer.appendChild(div);
+    usersContainer.appendChild(usersDiv);
+
+    usersDiv.addEventListener("click", () => {
+      document.location.href = "userInfo.html";
+    });
   });
 }
 getUsers();
+
+// User Information
+if (userInfo) {
+  async function getUser() {
+    const id = await localStorage.getItem("userId");
+    const token = await localStorage.getItem("token");
+    console.log(id, token);
+
+    const response = await fetch(`${API}/users/user/${id}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    const user = await response.json();
+    console.log(user);
+
+    userInfo.innerHTML = "";
+
+    const userData = document.createElement("div");
+    userData.className = "data";
+    userData.innerHTML = `
+    <div class="data-text">
+      <h3> ${user.email}</h3>
+      <h3> ${user.username}</h3>
+      <div class="update-and-delete-btn">
+        <button class="deleteButton">Delete</button>
+        <button class="updateButton">Update</button>
+      </div>
+    </div>
+    <img src="${API}/users/profile-picture/${user.profilePicture}" alt="profile-picture">`;
+
+    userInfo.appendChild(userData);
+
+    // const deleteData = document.getElementById("deleteButton");
+    // deleteData.addEventListener("click", deleteUser);
+
+    // Update
+    const updateBtn = userData.querySelector(".updateButton");
+    updateBtn.addEventListener("click", () => {
+      userData.innerHTML = `
+      <form id="updateForm">
+        <input type="file" name="file" class="dp">
+        <input text="text" class="updatedName" placeholder="Enter Your Username"/>
+        <input type="email" class="updatedEmail" placeholder="Enter your email" required />
+        <input type="password" class="updatedPassword" placeholder="Enter your password" required />
+        <div class=cancelAndSave>
+          <button class="cancel">Cancel</button>
+          <button class="save">Save</button>
+      </form>`;
+
+      userData.querySelector(".cancel").addEventListener("click", getUser);
+
+      userData.querySelector(".save").addEventListener("click", async () => {
+        const id = await localStorage.getItem("userId");
+
+        const formData = new FormData();
+
+        const file = userData.querySelector(".dp").files[0];
+
+        formData.append(
+          "username",
+          userData.querySelector(".updatedName").value,
+        );
+
+        formData.append("email", userData.querySelector(".updatedEmail").value);
+        formData.append(
+          "password",
+          userData.querySelector(".updatedPassword").value,
+        );
+
+        if (file) {
+          formData.append("file", file);
+        }
+
+        const response = await fetch(`${API}/users/user/${id}`, {
+          method: "PUT",
+          body: formData,
+        });
+        console.log("Status:", response.status);
+        const data = await response.json();
+        console.log("Server response:", data);
+        if (response.ok) getUser();
+      });
+    });
+
+    // Delete User
+    const deleteBtn = userData.querySelector(".deleteButton");
+    deleteBtn.addEventListener("click", async () => {
+      const id = await localStorage.getItem("userId");
+
+      const response = await fetch(`${API}/users/user/${id}`, {
+        method: "DELETE",
+      });
+      if (response.ok) userData.remove();
+    });
+  }
+
+  getUser();
+}
