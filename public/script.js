@@ -5,7 +5,6 @@ const usersContainer = document.getElementById("users");
 
 // User container
 const userInfo = document.getElementById("userInfo");
-console.log(userInfo);
 
 const API = "https://backend-2026-naomi-and-victor-rumw.onrender.com";
 
@@ -24,7 +23,7 @@ if (form) {
     formData.append("password", password);
     formData.append("file", file);
 
-    const response = await fetch(`${API}/users`, {
+    const response = await fetch(`/users`, {
       method: "POST",
       body: formData,
     });
@@ -43,7 +42,7 @@ if (loginForm) {
     const email = document.getElementById("loginEmail").value;
     const password = document.getElementById("loginPassword").value;
 
-    const response = await fetch(`${API}/users/login`, {
+    const response = await fetch(`/users/login`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -76,7 +75,7 @@ async function deleteUser() {
   const id = await localStorage.getItem("userId");
   const token = await localStorage.getItem("token");
 
-  await fetch(`${API}/users/user/${id}`, {
+  await fetch(`/users/user/${id}`, {
     method: "DELETE",
     headers: {
       "content-type": "application/json",
@@ -90,10 +89,9 @@ async function deleteUser() {
 async function getUsers() {
   if (!usersContainer) return;
 
-  const response = await fetch(`${API}/users`);
+  const response = await fetch(`/users`);
 
   const users = await response.json();
-  console.log(users);
 
   usersContainer.innerHTML = "";
   users.forEach((user) => {
@@ -103,7 +101,7 @@ async function getUsers() {
     usersDiv.innerHTML = `
         <h3>${user.email}</h3>
         <p>${user.username}</p>
-        <img src="${API}/users/profile-picture/${user.profilePicture}" alt="profile-picture">`;
+        <img src="/users/profile-picture/${user.profilePicture}" alt="profile-picture">`;
 
     usersContainer.appendChild(usersDiv);
 
@@ -119,9 +117,8 @@ if (userInfo) {
   async function getUser() {
     const id = await localStorage.getItem("userId");
     const token = await localStorage.getItem("token");
-    console.log(id, token);
 
-    const response = await fetch(`${API}/users/user/${id}`, {
+    const response = await fetch(`/users/user/${id}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -144,7 +141,7 @@ if (userInfo) {
         <button class="updateButton">Update</button>
       </div>
     </div>
-    <img src="${API}/users/profile-picture/${user.profilePicture}" alt="profile-picture">`;
+    <img src="/users/profile-picture/${user.profilePicture}" alt="profile-picture">`;
 
     userInfo.appendChild(userData);
 
@@ -155,15 +152,17 @@ if (userInfo) {
     const updateBtn = userData.querySelector(".updateButton");
     updateBtn.addEventListener("click", () => {
       userData.innerHTML = `
-      <form id="updateForm">
-        <input type="file" name="file" class="dp">
-        <input text="text" class="updatedName" placeholder="Enter Your Username"/>
-        <input type="email" class="updatedEmail" placeholder="Enter your email" required />
-        <input type="password" class="updatedPassword" placeholder="Enter your password" required />
-        <div class=cancelAndSave>
-          <button class="cancel">Cancel</button>
-          <button class="save">Save</button>
-      </form>`;
+      <div class="updateContainer">
+        <form id="updateForm">
+          <input type="file" name="file" class="dp">
+          <input text="text" class="updatedName" placeholder="Enter Your Username"/>
+          <input type="email" class="updatedEmail" placeholder="Enter your email" required />
+          <input type="password" class="updatedPassword" placeholder="Enter your password" required />
+          <div class=cancelAndSave>
+            <button class="cancel">Cancel</button>
+            <button class="save">Save</button>
+        </form>
+      </div>`;
 
       userData.querySelector(".cancel").addEventListener("click", getUser);
 
@@ -189,7 +188,7 @@ if (userInfo) {
           formData.append("file", file);
         }
 
-        const response = await fetch(`${API}/users/user/${id}`, {
+        const response = await fetch(`/users/user/${id}`, {
           method: "PUT",
           body: formData,
         });
@@ -205,7 +204,7 @@ if (userInfo) {
     deleteBtn.addEventListener("click", async () => {
       const id = await localStorage.getItem("userId");
 
-      const response = await fetch(`${API}/users/user/${id}`, {
+      const response = await fetch(`/users/user/${id}`, {
         method: "DELETE",
       });
       if (response.ok) userData.remove();

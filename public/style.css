@@ -8,7 +8,12 @@ body {
   font-family: Arial, Helvetica, sans-serif;
   max-width: 100vw;
   min-height: 100vh;
+  
+}
 
+.container {
+  width: 100%;
+  
   display: grid;
   justify-content: center;
 }
@@ -23,7 +28,8 @@ h1 {
   margin: 24px 0 8px;
 }
 
-#dp, .dp {
+#dp,
+.dp {
   padding: 0;
 }
 
@@ -45,8 +51,8 @@ button {
   background: #eee;
   padding: 8px;
   margin-top: 10px;
-  
-  transition: .5s;
+
+  transition: 0.5s;
 }
 
 .user:hover {
@@ -64,7 +70,7 @@ button {
 }
 
 #loginForm {
-  margin-bottom: 24px;
+  margin-bottom: 32px;
 }
 
 /* User Information */
@@ -93,4 +99,42 @@ button {
 
 img {
   height: 120px;
+}
+
+@media screen and (max-width: 600px) {
+  form {
+    width: 95vw;
+  }
+
+  h1 {
+    margin: 24px 0 8px;
+  }
+}
+
+@media screen and (max-width: 358px) {
+  .data {
+    flex-direction: column;
+    height: 250px;
+    padding: 0;
+
+    position: relative;
+  }
+
+  .data-text {
+    position: absolute;
+    bottom: 0;
+  }
+
+  .data > img {
+    position: absolute;
+    margin: 8px;
+    width: 120px;
+  }
+
+  .updateContainer {
+    display: grid;
+    justify-content: center;
+
+    margin-top: 16px;
+  }
 }
