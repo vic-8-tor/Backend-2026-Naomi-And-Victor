@@ -23,7 +23,7 @@ if (form) {
     formData.append("password", password);
     formData.append("file", file);
 
-    const response = await fetch(`/users`, {
+    const response = await fetch(`${API}/users`, {
       method: "POST",
       body: formData,
     });
@@ -42,7 +42,7 @@ if (loginForm) {
     const email = document.getElementById("loginEmail").value;
     const password = document.getElementById("loginPassword").value;
 
-    const response = await fetch(`/users/login`, {
+    const response = await fetch(`${API}/users/login`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -75,7 +75,7 @@ async function deleteUser() {
   const id = await localStorage.getItem("userId");
   const token = await localStorage.getItem("token");
 
-  await fetch(`/users/user/${id}`, {
+  await fetch(`${API}/users/user/${id}`, {
     method: "DELETE",
     headers: {
       "content-type": "application/json",
@@ -89,7 +89,7 @@ async function deleteUser() {
 async function getUsers() {
   if (!usersContainer) return;
 
-  const response = await fetch(`/users`);
+  const response = await fetch(`${API}/users`);
 
   const users = await response.json();
 
@@ -101,7 +101,7 @@ async function getUsers() {
     usersDiv.innerHTML = `
         <h3>${user.email}</h3>
         <p>${user.username}</p>
-        <img src="/users/profile-picture/${user.profilePicture}" alt="profile-picture">`;
+        <img src="${API}/users/profile-picture/${user.profilePicture}" alt="profile-picture">`;
 
     usersContainer.appendChild(usersDiv);
 
@@ -118,7 +118,7 @@ if (userInfo) {
     const id = await localStorage.getItem("userId");
     const token = await localStorage.getItem("token");
 
-    const response = await fetch(`/users/user/${id}`, {
+    const response = await fetch(`${API}/users/user/${id}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -141,7 +141,7 @@ if (userInfo) {
         <button class="updateButton">Update</button>
       </div>
     </div>
-    <img src="/users/profile-picture/${user.profilePicture}" alt="profile-picture">`;
+    <img src="${API}/users/profile-picture/${user.profilePicture}" alt="profile-picture">`;
 
     userInfo.appendChild(userData);
 
@@ -188,7 +188,7 @@ if (userInfo) {
           formData.append("file", file);
         }
 
-        const response = await fetch(`/users/user/${id}`, {
+        const response = await fetch(`${API}/users/user/${id}`, {
           method: "PUT",
           body: formData,
         });
@@ -204,7 +204,7 @@ if (userInfo) {
     deleteBtn.addEventListener("click", async () => {
       const id = await localStorage.getItem("userId");
 
-      const response = await fetch(`/users/user/${id}`, {
+      const response = await fetch(`${API}/users/user/${id}`, {
         method: "DELETE",
       });
       if (response.ok) userData.remove();
