@@ -8,12 +8,11 @@ body {
   font-family: Arial, Helvetica, sans-serif;
   max-width: 100vw;
   min-height: 100vh;
-  
 }
 
 .container {
   width: 100%;
-  
+
   display: grid;
   justify-content: center;
 }
@@ -89,6 +88,10 @@ button {
   padding: 32px;
 }
 
+.updateContainer {
+  width: 100%;
+}
+
 .data-text > * {
   padding: 8px;
 }
@@ -109,13 +112,24 @@ img {
   h1 {
     margin: 24px 0 8px;
   }
+
+  .data {
+    padding: 8px;
+  }
+
+  .updateContainer {
+    display: grid;
+    justify-content: center;
+
+    margin-top: 0;
+  }
 }
 
 @media screen and (max-width: 358px) {
   .data {
     flex-direction: column;
     height: 250px;
-    padding: 0;
+    padding: 8px;
 
     position: relative;
   }
@@ -129,12 +143,5 @@ img {
     position: absolute;
     margin: 8px;
     width: 120px;
-  }
-
-  .updateContainer {
-    display: grid;
-    justify-content: center;
-
-    margin-top: 16px;
   }
 }
